@@ -132,6 +132,7 @@ function table(widths, rows, o = {}) {
       let col = 0;
       return new TableRow({
         height: o.heights && o.heights[ri] ? o.heights[ri] : undefined,
+        cantSplit: o.cantSplit,
         children: row.map((c) => {
           const span = c.span || 1;
           const w = widths.slice(col, col + span).reduce((a, b) => a + b, 0);
@@ -272,7 +273,8 @@ function labelled(items, pal, w, narrow) {
   for (let i = 0; i < items.length; i += 3) {
     rows.push([0, 1, 2].map((j) => ({ children: items[i + j] ? cell(items[i + j]) : [], margins: { top: 0, bottom: 0, left: 0, right: 120 } })));
   }
-  return [table([cw, cw, w - 2 * cw], rows)];
+  // A grid row never breaks across pages (a label on page 1, its text on page 2).
+  return [table([cw, cw, w - 2 * cw], rows, { cantSplit: true })];
 }
 
 const SECTIONS = {
