@@ -27,10 +27,16 @@ jobs:
           zip -r -X ../cv-ats-francophone.zip cv-ats-francophone -x "*.DS_Store" "*/__pycache__/*"
           unzip -l ../cv-ats-francophone.zip
 
+      # If the release already exists (tag moved or pushed again), only replace its ZIP.
+      # Si la release existe déjà (tag déplacé ou repoussé), on remplace seulement son ZIP.
       - name: Publish the release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" cv-ats-francophone.zip \
-            --title "CV ATS francophone $GITHUB_REF_NAME" \
-            --notes-file .github/release-notes.md
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" cv-ats-francophone.zip --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" cv-ats-francophone.zip \
+              --title "CV ATS francophone $GITHUB_REF_NAME" \
+              --notes-file .github/release-notes.md
+          fi
