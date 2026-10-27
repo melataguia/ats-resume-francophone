@@ -1,0 +1,72 @@
+name: "Usage d'un pays à corriger / Country practice to fix"
+description: "Une règle de CV pour un pays est fausse, incomplète ou manquante. / A CV rule for a country is wrong, incomplete or missing."
+title: "[Usage pays / Country] "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci ! Les usages par pays font la force de ce projet, et ils viennent de celles et ceux qui recrutent ou cherchent un emploi sur place.
+        Thank you! Country practices are the strength of this project, and they come from the people who hire or look for work there.
+
+        **Aucune donnée personnelle, s'il vous plaît : pas de vrai CV, de nom ni de coordonnées.**
+        **No personal data, please: no real CV, name or contact details.**
+  - type: dropdown
+    id: pays
+    attributes:
+      label: Pays / Country
+      options:
+        - Belgique / Belgium
+        - France
+        - Suisse / Switzerland
+        - Luxembourg
+        - Québec / Quebec (Canada)
+        - Sénégal / Senegal
+        - Cameroun / Cameroon
+        - Côte d'Ivoire
+        - Maroc / Morocco
+        - Tunisie / Tunisia
+        - Autre / Other
+    validations:
+      required: true
+  - type: input
+    id: autre-pays
+    attributes:
+      label: Autre pays ou région / Other country or region
+      placeholder: "Ex. : Bénin, RDC, Flandre... / E.g. Benin, DRC, Flanders..."
+  - type: textarea
+    id: regle-actuelle
+    attributes:
+      label: Ce que dit le skill aujourd'hui / What the skill says today
+      description: "Copiez la ligne de references/pays_francophones.md si elle existe. / Paste the line from references/pays_francophones.md if there is one."
+  - type: textarea
+    id: usage-correct
+    attributes:
+      label: L'usage correct / The correct practice
+      description: "Ce que les recruteurs attendent vraiment sur place. / What recruiters there really expect."
+      placeholder: "Ex. : la date de naissance n'est plus attendue dans les grandes entreprises de ce pays. / E.g. large companies in this country no longer expect a date of birth."
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Source
+      description: "Lien officiel, site d'emploi, guide d'un service public pour l'emploi, ou votre expérience (dites laquelle). / Official link, job board, public employment service guide, or your own experience (say which)."
+    validations:
+      required: true
+  - type: dropdown
+    id: role
+    attributes:
+      label: Vous êtes / You are
+      options:
+        - Je recrute ou je travaille en RH / I recruit or work in HR
+        - Je cherche un emploi / I am looking for a job
+        - J'accompagne des personnes en recherche d'emploi / I support job seekers
+        - Autre / Other
+  - type: checkboxes
+    id: confidentialite
+    attributes:
+      label: Confidentialité / Privacy
+      options:
+        - label: "Je n'ai mis aucune donnée personnelle. / I included no personal data."
+          required: true
