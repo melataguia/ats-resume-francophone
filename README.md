@@ -1,7 +1,14 @@
 # CV ATS francophone · skill Claude
 
+**Français** · [English](README.en.md)
+
 Un skill Claude gratuit pour rédiger un CV **adapté à chaque offre**, **en français ou en anglais**, et **lisible par les logiciels de recrutement (ATS)**, selon les usages des pays francophones : **Belgique, France, Suisse romande, Luxembourg, Québec et Afrique francophone**.
 
+![Les 11 modèles de la version design, avec leur nom parlant et leur nom d'origine](exemples/apercu_modeles.png)
+
+**[Télécharger le skill (ZIP prêt à importer)](https://github.com/melataguia/ats-resume-francophone/releases/latest/download/cv-ats-francophone.zip)** · installation en 2 minutes [ci-dessous](#installation).
+
+## Pourquoi ce skill
 La plupart des skills CV existants suivent les normes américaines ou britanniques. Celui-ci part des réalités francophones : langues au format CECR (essentielles en Belgique, en Suisse et au Luxembourg), photo et date de naissance selon le pays, permis de séjour en Suisse, papier lettre et règles anti-discrimination au Québec, équivalences de diplômes étrangers.
 
 Beaucoup d'entreprises de ces pays (multinationales, institutions européennes, organisations internationales, tech, conseil) demandent un CV en anglais. Le skill le rédige aussi en anglais, en gardant les usages du pays du poste : un CV en anglais pour Genève n'est pas un CV américain.
@@ -19,32 +26,14 @@ Beaucoup d'entreprises de ces pays (multinationales, institutions européennes, 
 
 Il n'invente jamais d'expérience, de diplôme, de chiffre ni de niveau de langue.
 
-## Les modèles de la version design
-![Les 11 modèles de la version design](exemples/apercu_modeles.png)
-
-Une colonne : onyx, rhyhorn, kakuna, porygon, bronzor. Deux colonnes : azurill, pikachu, gengar, ditto, chikorita, glalie. Le skill propose un modèle selon le secteur et le pays (photo attendue en Suisse, à éviter au Québec). La version design ne se dépose jamais sur un portail ATS : c'est la version ATS qui sert pour les portails.
-
-## Exemples
-Profil fictif de Camille DUPONT, Data Analyst à Liège :
-
-| Fichier source | Résultat |
-|---|---|
-| `exemples/cv_content_exemple.json` + `keywords_exemple.txt` | `CV_Camille_DUPONT_Exemple_ATS.pdf` (français) |
-| `exemples/cv_content_example_en.json` + `keywords_example_en.txt` | `CV_Camille_DUPONT_Example_ATS_EN.pdf` (anglais) |
-| `exemples/cv_content_exemple.json` (modèle pikachu) | `CV_Camille_DUPONT_Exemple_Design.pdf` |
-
-Résultats du test :
-```
-Français : MOTS-CLÉS 9/11 (82 %)  · manquants : Tableau, Azure · TEST DE LECTURE ATS : PASSE
-Anglais  : MOTS-CLÉS 10/12 (83 %) · manquants : Tableau, Azure · TEST DE LECTURE ATS : PASSE
-```
-
 ## Installation
 
 ### Claude.ai (web, desktop, mobile)
-1. Téléchargez ce dépôt (bouton **Code → Download ZIP**) et décompressez-le.
-2. Recompressez **uniquement** le dossier `skills/cv-ats-francophone` (le fichier ZIP doit contenir ce dossier, avec `SKILL.md` dedans).
-3. Dans les paramètres de Claude, section **Skills**, importez ce ZIP et activez le skill.
+1. Téléchargez [cv-ats-francophone.zip](https://github.com/melataguia/ats-resume-francophone/releases/latest/download/cv-ats-francophone.zip), le ZIP de la dernière version.
+2. Dans les paramètres de Claude, vérifiez que l'exécution de code est activée, puis, dans la section **Skills**, importez le ZIP tel quel, sans le décompresser.
+3. Activez le skill.
+
+Toutes les versions et leurs nouveautés : [Releases](https://github.com/melataguia/ats-resume-francophone/releases).
 
 ### Claude Code
 ```bash
@@ -59,14 +48,45 @@ Joignez votre CV actuel (ou remplissez une fois `references/profil_modele.md`), 
 - « Mon CV passe-t-il les ATS ? Voici le lien de l'offre. »
 - « Fais-moi un CV pour cette offre à Genève et la lettre de motivation. »
 - « Cette entreprise de Luxembourg demande un CV en anglais : fais-le. »
-- « Fais aussi une version design avec le modèle gengar. »
-- « Tailor my CV to this job in Brussels, in English. »
+- « Fais aussi une version design avec le modèle créatif. »
 
 Conseil : gardez votre profil complet dans un fichier. Le skill choisit à chaque fois ce qui sert pour l'offre, dans la langue demandée.
 
+## Les modèles de la version design
+Le skill propose un modèle selon le secteur et le pays (photo attendue en Suisse, à éviter au Québec). Vous pouvez aussi le choisir par son nom, parlant ou d'origine :
+
+| Nom | Nom d'origine | Mise en page | Pour qui |
+|---|---|---|---|
+| classique | onyx | 1 colonne | Banque, finance, audit, juridique, secteur public |
+| épuré | rhyhorn | 1 colonne | Tech, data, ingénierie, conseil |
+| centré | kakuna | 1 colonne | Profils juniors, enseignement, santé |
+| encadré | porygon | 1 colonne | Hôtellerie, commerce, logistique |
+| structuré | bronzor | 1 colonne | Profils seniors, institutions, CV de 2 pages |
+| aéré | azurill | 2 colonnes | Tech, produit, gestion de projet |
+| moderne | pikachu | 2 colonnes | Conseil, RH, formation |
+| créatif | gengar | 2 colonnes | Marketing, communication, vente |
+| bandeau | ditto | 2 colonnes | Architecture, design, métiers créatifs |
+| audacieux | chikorita | 2 colonnes | Marketing, marque, événementiel |
+| doux | glalie | 2 colonnes | Environnement, ONG, secteur associatif |
+
+La version design ne se dépose jamais sur un portail ATS : c'est la version ATS qui sert pour les portails.
+
+## Exemples
+Profil fictif de Camille DUPONT, Data Analyst à Liège :
+
+| Fichier source | Résultat |
+|---|---|
+| `exemples/cv_content_exemple.json` + `keywords_exemple.txt` | `CV_Camille_DUPONT_Exemple_ATS.pdf` (français) |
+| `exemples/cv_content_example_en.json` + `keywords_example_en.txt` | `CV_Camille_DUPONT_Example_ATS_EN.pdf` (anglais) |
+| `exemples/cv_content_exemple.json` (modèle moderne) | `CV_Camille_DUPONT_Exemple_Design.pdf` |
+
+Résultats du test :
+- CV en français : mots-clés 9/11 (82 %), il manque Tableau et Azure, test de lecture ATS réussi.
+- CV en anglais : mots-clés 10/12 (83 %), il manque Tableau et Azure, test de lecture ATS réussi.
+
 ## Contenu
 ```
-skills/cv-ats-francophone/
+skills/cv-ats-francophone/        le skill (c'est ce dossier que contient le ZIP)
 ├── SKILL.md                      instructions pour Claude
 ├── references/
 │   ├── ats_rules.md              règles ATS, détection de l'ATS, mots-clés, format du contenu
@@ -79,11 +99,13 @@ skills/cv-ats-francophone/
     ├── build_design_cv.js        construit la version design (.docx) sur un modèle
     └── ats_check.py              test de lecture ATS + score de mots-clés
 exemples/                         profil fictif en français et en anglais, mots-clés, CV générés, aperçu des modèles
+.github/                          formulaire « Usage d'un pays à corriger » et publication automatique des versions
 ```
 
 ## Contribuer
-Les usages évoluent et varient selon les secteurs. Vous recrutez au Sénégal, au Maroc, en Côte d'Ivoire, à Genève ou à Montréal et vous voyez une règle à corriger ou à ajouter ? Ouvrez une *issue* ou une *pull request* sur `references/pays_francophones.md`, avec une source si possible.
-Vous avez vu un ATS mal lire un CV produit par ce skill ? Décrivez le cas (sans données personnelles) dans une *issue*.
+Les usages évoluent et varient selon les secteurs. Vous recrutez au Sénégal, au Cameroun, en Côte d'Ivoire, à Genève ou à Montréal et vous voyez une règle à corriger ou à ajouter ? [Signalez un usage d'un pays à corriger](https://github.com/melataguia/ats-resume-francophone/issues/new?template=usage-pays.yml) : un court formulaire, en français ou en anglais. Les *pull requests* sur `references/pays_francophones.md` sont aussi les bienvenues, avec une source si possible.
+
+Vous avez vu un ATS mal lire un CV produit par ce skill ? Décrivez le cas, sans données personnelles, dans une [issue](https://github.com/melataguia/ats-resume-francophone/issues/new).
 
 ## Avertissement
 Ce skill aide à présenter un parcours réel de façon claire. Il ne garantit pas un entretien : les ATS et les recruteurs ont chacun leurs critères. Les usages par pays sont des pratiques courantes, pas des règles légales, sauf mention contraire.
@@ -93,8 +115,3 @@ Les mises en page de la version design reprennent celles des modèles de [Reacti
 
 ## Auteur
 Créé par **Bidias Melataguia**, fondateur de The Analyst. Licence MIT : libre d'utilisation, de modification et de partage.
-
-## In English
-A free Claude skill that tailors a CV to each job offer, **in French or in English**, and makes it readable by applicant tracking systems (ATS), following the CV conventions of French-speaking countries: Belgium, France, French-speaking Switzerland, Luxembourg, Quebec and francophone Africa. Many employers there (multinationals, EU institutions, international organisations) ask for an English CV: the skill writes it in English while keeping the conventions of the job's country (CEFR language levels, photo rules, Swiss residence permit, letter paper in Quebec), and translates job and degree titles faithfully, with the original degree title in brackets.
-
-It detects the company's ATS from the job link, extracts the offer's keywords and uses them only when they are true, builds an ATS-safe CV in Word and PDF plus an optional designed version (11 layouts inspired by Reactive Resume), tests how an ATS reads it and scores keyword coverage. It never invents experience, degrees, figures or language levels. English example: `exemples/cv_content_example_en.json` gives `exemples/CV_Camille_DUPONT_Example_ATS_EN.pdf` (keywords 10/12, ATS read test passed). Installation: same steps as above.
