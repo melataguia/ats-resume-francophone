@@ -43,7 +43,7 @@ function loadDocx() {
     try {
       return require(require.resolve("docx", { paths: [process.cwd()] }));
     } catch (_) {
-      console.error('Package "docx" introuvable. Lancer : npm install docx (dans le dossier de travail).');
+      console.error('Package "docx" introuvable. Lancer : npm install docx@9 (dans le dossier de travail).');
       process.exit(1);
     }
   }

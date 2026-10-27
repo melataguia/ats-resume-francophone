@@ -69,7 +69,7 @@ def docx_text(path):
     try:
         import docx
     except ImportError:
-        sys.exit("Module python-docx manquant : pip install python-docx")
+        sys.exit("Module python-docx manquant : pip install \"python-docx~=1.1\"")
     d = docx.Document(path)
     body = [p.text for p in d.paragraphs]
     tables = []

@@ -91,7 +91,7 @@ Le script `ats_check.py --keywords keywords.txt` donne le taux de couverture. Ob
 ## 6. Commandes
 ```bash
 SKILL_DIR=<dossier contenant ce SKILL.md>
-cd <dossier de travail> && npm ls docx >/dev/null 2>&1 || npm install docx
+cd <dossier de travail> && npm ls docx >/dev/null 2>&1 || npm install docx@9
 node $SKILL_DIR/scripts/build_ats_cv.js cv_content.json CV_..._ATS.docx
 soffice --headless --convert-to pdf CV_..._ATS.docx        # version PDF texte
 node $SKILL_DIR/scripts/build_design_cv.js cv_content.json CV_..._Design.docx onyx   # version design (facultative)

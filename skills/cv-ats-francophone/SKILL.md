@@ -37,12 +37,13 @@ Pour les deux langues : `cv_content.json` et `cv_content_en.json`, écrits à pa
 
 ## Étape 5 · Construire le CV
 ```bash
-cd <dossier de travail> && (npm ls docx >/dev/null 2>&1 || npm install docx)
+cd <dossier de travail> && (npm ls docx >/dev/null 2>&1 || npm install docx@9)
 node SKILL_DIR/scripts/build_ats_cv.js cv_content.json CV_<Nom>_<Entreprise>_ATS.docx
 soffice --headless --convert-to pdf CV_<Nom>_<Entreprise>_ATS.docx
 ```
 Version anglaise en plus de la française : même commande avec `cv_content_en.json` et le suffixe `_EN` (`CV_<Nom>_<Entreprise>_ATS_EN.docx`).
 Si `soffice` n'est pas disponible, livrer le .docx seul et indiquer que la personne peut l'exporter en PDF depuis Word.
+Les scripts n'ont que deux dépendances, installées seulement si elles manquent : `docx` (npm, écrit les fichiers Word) et `python-docx` (PyPI, les relit pour le test ATS). Ils n'accèdent pas au réseau et n'écrivent que le fichier demandé.
 **Version design (facultative)** : si la personne veut aussi un CV plus visuel (pour un envoi par e-mail ou un entretien), le construire à partir du **même** `cv_content.json`, sur un des 11 modèles inspirés de Reactive Resume (rxresu.me). Choisir le modèle selon `references/modeles_design.md` (secteur, pays, photo), puis :
 ```bash
 node SKILL_DIR/scripts/build_design_cv.js cv_content.json CV_<Nom>_<Entreprise>_Design.docx <modèle>
@@ -51,7 +52,7 @@ soffice --headless --convert-to pdf CV_<Nom>_<Entreprise>_Design.docx
 Expliquer qu'il ne doit pas être déposé sur un portail ATS.
 
 ## Étape 6 · Test de lecture ATS (obligatoire avant de livrer)
-Prérequis : `python3 -c "import docx" || pip install python-docx` ; pour le PDF, `pdftotext` (paquet poppler). La langue du contrôle est lue dans `cv_content.json`.
+Prérequis : `python3 -c "import docx" || pip install "python-docx~=1.1"` ; pour le PDF, `pdftotext` (paquet poppler). La langue du contrôle est lue dans `cv_content.json`.
 ```bash
 python3 SKILL_DIR/scripts/ats_check.py CV_..._ATS.docx --content cv_content.json --keywords keywords.txt --strict
 python3 SKILL_DIR/scripts/ats_check.py CV_..._ATS.pdf --content cv_content.json
