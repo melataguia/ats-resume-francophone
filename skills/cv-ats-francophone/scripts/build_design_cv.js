@@ -8,7 +8,8 @@
  *
  * Usage: node build_design_cv.js cv_content.json output.docx [template]
  *        node build_design_cv.js --list
- * Template: the argument, else cv.design.template, else "onyx".
+ * Template: the argument, else cv.design.template, else "onyx". Descriptive
+ * names work too, in French or English: classique/classic, moderne/modern...
  * Requires the "docx" npm package (npm install docx).
  * See references/modeles_design.md for the templates and the "design" fields.
  *
@@ -21,7 +22,9 @@
  *
  * Utilisation : node build_design_cv.js cv_content.json sortie.docx [modèle]
  *               node build_design_cv.js --list
- * Modèle : l'argument, sinon cv.design.template, sinon « onyx ».
+ * Modèle : l'argument, sinon cv.design.template, sinon « onyx ». Les noms
+ * parlants marchent aussi, en français ou en anglais : classique/classic,
+ * moderne/modern...
  * Nécessite le paquet npm « docx » (npm install docx).
  * Modèles et champs « design » : references/modeles_design.md.
  */
@@ -70,9 +73,33 @@ const TEMPLATES = {
   glalie:    { layout: "sidebar", side: "left", sideW: 0.32, header: "sideTop", heading: "rule", accent: "4F6F4B", sideFill: "tint" },
 };
 
+// Descriptive names (French, English), accepted next to the Reactive Resume names.
+// Noms parlants (français, anglais), acceptés en plus des noms de Reactive Resume.
+const NAMES = {
+  onyx: ["classique", "classic"],
+  rhyhorn: ["épuré", "clean"],
+  kakuna: ["centré", "centered"],
+  porygon: ["encadré", "boxed"],
+  bronzor: ["structuré", "structured"],
+  azurill: ["aéré", "airy"],
+  pikachu: ["moderne", "modern"],
+  gengar: ["créatif", "creative"],
+  ditto: ["bandeau", "banner"],
+  chikorita: ["audacieux", "bold"],
+  glalie: ["doux", "soft"],
+};
+// Lowercase without accents, so "Épuré", "epure" and "épuré" all match.
+// Minuscules sans accents : « Épuré », « epure » et « épuré » se valent.
+const key = (s) => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+const ALIASES = {};
+for (const [k, names] of Object.entries(NAMES)) for (const n of [k, ...names]) ALIASES[key(n)] = k;
+
 const [, , inPath, outPath, tplArg] = process.argv;
 if (inPath === "--list") {
-  for (const [k, t] of Object.entries(TEMPLATES)) console.log(k.padEnd(10), t.layout === "single" ? "1 colonne" : `2 colonnes, barre à ${t.side === "left" ? "gauche" : "droite"}`);
+  for (const [k, t] of Object.entries(TEMPLATES)) {
+    const layout = t.layout === "single" ? "1 colonne" : `2 colonnes, barre à ${t.side === "left" ? "gauche" : "droite"}`;
+    console.log(k.padEnd(10), NAMES[k].join(" / ").padEnd(24), layout);
+  }
   process.exit(0);
 }
 if (!inPath || !outPath) {
@@ -81,10 +108,12 @@ if (!inPath || !outPath) {
 }
 const cv = JSON.parse(fs.readFileSync(inPath, "utf8"));
 const design = cv.design || {};
-const TPL_NAME = (tplArg || design.template || "onyx").toLowerCase();
+const asked = tplArg || design.template || "onyx";
+const TPL_NAME = ALIASES[key(asked)];
 const T = TEMPLATES[TPL_NAME];
 if (!T) {
-  console.error(`Modèle inconnu « ${TPL_NAME} ». Modèles : ${Object.keys(TEMPLATES).join(", ")}`);
+  const known = Object.keys(TEMPLATES).map((k) => `${k} (${NAMES[k].join(", ")})`).join(", ");
+  console.error(`Modèle inconnu « ${asked} ». Modèles : ${known}`);
   process.exit(1);
 }
 
