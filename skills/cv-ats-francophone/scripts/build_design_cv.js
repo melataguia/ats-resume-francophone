@@ -11,6 +11,19 @@
  * Template: the argument, else cv.design.template, else "onyx".
  * Requires the "docx" npm package (npm install docx).
  * See references/modeles_design.md for the templates and the "design" fields.
+ *
+ * Construit la version design du CV (.docx) à partir du même cv_content.json
+ * que la version ATS. Les mises en page suivent les modèles de Reactive Resume
+ * (rxresu.me, licence MIT) : une colonne (onyx, rhyhorn, kakuna, porygon,
+ * bronzor) et deux colonnes (azurill, pikachu, gengar, ditto, chikorita,
+ * glalie). Pas pour les portails ATS : la mise en page utilise des tableaux
+ * et des formes de couleur.
+ *
+ * Utilisation : node build_design_cv.js cv_content.json sortie.docx [modèle]
+ *               node build_design_cv.js --list
+ * Modèle : l'argument, sinon cv.design.template, sinon « onyx ».
+ * Nécessite le paquet npm « docx » (npm install docx).
+ * Modèles et champs « design » : references/modeles_design.md.
  */
 const fs = require("fs");
 const path = require("path");
@@ -18,6 +31,8 @@ const zlib = require("zlib");
 
 // Node resolves modules from this script's folder, not from the working
 // directory: fall back to a "docx" installed where the command is run.
+// Node cherche les modules depuis le dossier du script, pas depuis le dossier
+// de travail : on se rabat sur un « docx » installé là où la commande est lancée.
 function loadDocx() {
   try {
     return require("docx");
@@ -39,6 +54,8 @@ const {
 
 // layout: single | sidebar. header: where name and contact go.
 // heading: plain | rule | center | bar | label. sideFill: full-height sidebar color.
+// layout : single | sidebar. header : où vont le nom et les coordonnées.
+// heading : plain | rule | center | bar | label. sideFill : couleur de la barre latérale sur toute la hauteur.
 const TEMPLATES = {
   onyx:      { layout: "single", header: "left", photo: "left", heading: "plain", accent: "2E4057", nameFont: "Georgia", ruleAfterHeader: true },
   rhyhorn:   { layout: "single", header: "left", photo: "right", heading: "rule", accent: "2B5C8A" },
@@ -84,7 +101,7 @@ const H = {
 }[lang];
 const L = { ...H, ...(cv.headings || {}) };
 
-// Colors
+// Colors / Couleurs
 const hex = (s) => String(s).replace("#", "").toUpperCase();
 const mix = (a, b, t) => {
   const pa = [0, 2, 4].map((i) => parseInt(a.slice(i, i + 2), 16));
@@ -98,17 +115,19 @@ const LIGHT = { ink: "FFFFFF", muted: mix("FFFFFF", ACC, 0.22), head: "FFFFFF", 
 
 const FONT = design.font || "Calibri";
 const NAME_FONT = design.nameFont || T.nameFont || FONT;
-const SZ = 20; // 10 pt body
+const SZ = 20; // 10 pt body / corps 10 pt
 const PW = cv.paper === "letter" ? 12240 : 11906;
 const PH = cv.paper === "letter" ? 15840 : 16838;
 
-// Building blocks
+// Building blocks / Briques de base
 const run = (text, o = {}) => new TextRun({
   text, font: o.font || FONT, size: o.size || SZ, bold: o.bold, italics: o.italics,
   color: o.color, allCaps: o.caps, characterSpacing: o.spacing,
 });
 // "Keep with next" inside a table cell makes Word push the whole row to the
 // next page, leaving page 1 empty: only use it when the body is not a table.
+// « Paragraphe solidaire du suivant » dans une cellule pousse toute la ligne à la page
+// suivante et laisse la page 1 vide : seulement quand le corps n'est pas un tableau.
 const KEEP = T.layout === "single" && T.heading !== "label";
 const P = (children, o = {}) => new Paragraph({
   children: [].concat(children), alignment: o.align, keepNext: KEEP && o.keepNext, border: o.border, indent: o.indent,
@@ -121,9 +140,11 @@ const NB = { style: BorderStyle.NONE, size: 0, color: "FFFFFF" };
 const NO_BORDERS = { top: NB, bottom: NB, left: NB, right: NB, insideHorizontal: NB, insideVertical: NB };
 const line = (color, size = 6) => ({ style: BorderStyle.SINGLE, size, color, space: 2 });
 // Table cells: no "space", Word shifts cell borders that carry one.
+// Cellules : pas de « space », Word décale les bordures de cellule qui en ont un.
 const cellLine = (color, size = 6) => ({ style: BorderStyle.SINGLE, size, color });
 
 // rows: [[{ children, fill, margins, vAlign, borders, span }]]; widths in twips.
+// rows : [[{ children, fill, margins, vAlign, borders, span }]] ; largeurs en twips.
 function table(widths, rows, o = {}) {
   return new Table({
     width: { size: widths.reduce((a, b) => a + b, 0), type: WidthType.DXA },
@@ -151,6 +172,7 @@ function table(widths, rows, o = {}) {
 }
 
 // 1x1 PNG of one color, stretched into a shape behind the text.
+// PNG 1x1 d'une seule couleur, étiré en forme derrière le texte.
 function solidPng(color) {
   const crcTable = Array.from({ length: 256 }, (_, n) => {
     let c = n;
@@ -195,7 +217,7 @@ function photo(px) {
   return new ImageRun({ type: ext === ".png" ? "png" : "jpg", data: fs.readFileSync(p), transformation: { width: px, height: px } });
 }
 
-// Header pieces
+// Header pieces / Éléments de l'en-tête
 const c = cv.contact || {};
 const contactItems = [c.location, c.phone, c.email, c.linkedin, c.portfolio, ...(c.other || [])].filter(Boolean);
 
@@ -221,7 +243,7 @@ function contactBlock(pal, align, stacked, boxed) {
   return out;
 }
 
-// Section titles
+// Section titles / Titres de rubrique
 function heading(text, pal, style = T.heading) {
   const o = { before: 220, after: 100, keepNext: true };
   switch (style) {
@@ -231,12 +253,13 @@ function heading(text, pal, style = T.heading) {
       return P(run(text, { bold: true, size: 24, color: pal.head }), { ...o, align: AlignmentType.CENTER });
     case "plain":
       return P(run(text, { bold: true, size: 26, font: NAME_FONT, color: pal.head }), o);
-    default: // rule
+    default: // rule: underlined title / titre souligné
       return P(run(text, { bold: true, size: 24, color: pal.head }), { ...o, border: { bottom: line(pal.rule) } });
   }
 }
 
 // Entries: wide = two lines with right-aligned details; narrow = stacked.
+// Entrées : large = deux lignes avec détails alignés à droite ; étroit = empilé.
 const dates = (s, e) => [s, e === "present" || e === "Présent" || e === "Present" ? L.present : e].filter(Boolean).join(" - ");
 const bullet = (text, pal) => new Paragraph({
   children: [run(text, { color: pal.ink })], numbering: { reference: pal.bullets, level: 0 }, spacing: { after: 30 },
@@ -262,6 +285,7 @@ const asEducation = (e) => ({ head: e.school || e.degree, headRight: e.location,
 const asProject = (e) => ({ head: e.title, headRight: dates(e.start, e.end), sub: [e.company, e.location].filter(Boolean).join(", "), context: e.context, bullets: e.bullets });
 
 // Label + items, as a 3-column grid (wide) or stacked (narrow).
+// Intitulé + éléments, en grille de 3 colonnes (large) ou empilés (étroit).
 function labelled(items, pal, w, narrow) {
   const cell = (it) => [
     P(run(it.label, { bold: true, color: pal.ink }), { after: 0 }),
@@ -274,6 +298,7 @@ function labelled(items, pal, w, narrow) {
     rows.push([0, 1, 2].map((j) => ({ children: items[i + j] ? cell(items[i + j]) : [], margins: { top: 0, bottom: 0, left: 0, right: 120 } })));
   }
   // A grid row never breaks across pages (a label on page 1, its text on page 2).
+  // Une ligne de grille ne se coupe jamais entre deux pages (intitulé en page 1, texte en page 2).
   return [table([cw, cw, w - 2 * cw], rows, { cantSplit: true })];
 }
 
@@ -304,6 +329,7 @@ const MAIN_ORDER = ["profile", "experience", "projects", "volunteering"];
 const SIDE_ORDER = ["skills", "education", "languages", "certifications", "extra"];
 
 // Header with an optional photo beside the text.
+// En-tête avec une photo facultative à côté du texte.
 function headerWithPhoto(textKids, side, w, px = 90) {
   const ph = photo(px);
   if (!ph) return textKids;
@@ -323,7 +349,7 @@ function centeredHeader(pal) {
   ];
 }
 
-// Layouts
+// Layouts / Mises en page
 const body = [];
 let headers;
 let margin;
@@ -351,6 +377,7 @@ if (T.layout === "single") {
 
   if (T.heading === "label") {
     // Bronzor: one row per section, label on the left.
+    // Bronzor : une ligne par rubrique, intitulé à gauche.
     const LW = 2100;
     const top = { top: cellLine(ACC, 6), bottom: NB, left: NB, right: NB };
     const rows = SINGLE_ORDER
@@ -367,6 +394,8 @@ if (T.layout === "single") {
 } else {
   // Two columns spread to the page edges; colors come from cell shading and
   // full-height shapes in the page header, so sidebars reach the bottom of every page.
+  // Deux colonnes jusqu'aux bords de la page ; les couleurs viennent du fond des cellules et de
+  // formes pleine hauteur dans l'en-tête, pour que les barres descendent en bas de chaque page.
   margin = { top: 360, bottom: 360, left: 0, right: 0 };
   const SW = Math.round(PW * T.sideW);
   const MW = PW - SW;
@@ -402,6 +431,7 @@ if (T.layout === "single") {
     main.push(...contactBlock(DARK, AlignmentType.LEFT, false), P([], { after: 60 }));
   } else if (T.header === "sideTop" && T.topFill) {
     // Gengar: name block on the accent color, summary on a tinted band.
+    // Gengar : bloc du nom sur la couleur d'accent, profil sur un bandeau teinté.
     const ph = photo(84);
     const head = [...(ph ? [P(ph, { after: 100 })] : []), ...nameBlock(LIGHT, AlignmentType.LEFT, 36), ...contactBlock(LIGHT, AlignmentType.LEFT, true)];
     const summary = cv.summary ? [heading(L.profile, DARK), ...SECTIONS.profile(DARK)] : [];
@@ -411,11 +441,13 @@ if (T.layout === "single") {
     mainSections = MAIN_ORDER.filter((k) => k !== "profile");
   } else if (T.header === "sideTop") {
     // Glalie: name and contact at the top of the tinted sidebar.
+    // Glalie : nom et coordonnées en haut de la barre latérale teintée.
     const ph = photo(90);
     if (ph) side.push(P(ph, { align: AlignmentType.CENTER, after: 100 }));
     side.push(...nameBlock(sidePal, AlignmentType.CENTER, 36), ...contactBlock(sidePal, AlignmentType.LEFT, true, true));
   } else if (T.header === "mainBlock") {
     // Pikachu: photo on top of the sidebar, name in a colored block over the main column.
+    // Pikachu : photo en haut de la barre, nom dans un bloc coloré au-dessus de la colonne principale.
     const ph = photo(110);
     if (ph) side.push(P(ph, { align: AlignmentType.LEFT, after: 60 }));
     main.push(table([mainIn], [[{
@@ -424,6 +456,7 @@ if (T.layout === "single") {
     }]]));
   } else {
     // Chikorita: header at the top of the main column.
+    // Chikorita : en-tête en haut de la colonne principale.
     main.push(...headerWithPhoto([...nameBlock(DARK, AlignmentType.LEFT, 36), ...contactBlock(DARK, AlignmentType.LEFT, true)], T.photo, mainIn, 84));
   }
 

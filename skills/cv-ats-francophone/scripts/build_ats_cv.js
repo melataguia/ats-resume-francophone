@@ -8,11 +8,23 @@
  * Usage: node build_ats_cv.js cv_content.json output.docx
  * Requires the "docx" npm package (npm install docx).
  * See references/ats_rules.md for the JSON schema.
+ *
+ * Construit un CV ATS sur une colonne (.docx) à partir d'un fichier JSON.
+ * Aucun tableau, aucune zone de texte, rien dans l'en-tête ou le pied de
+ * page, aucune image : chaque texte est un paragraphe simple dans l'ordre
+ * de lecture, pour que Workday, Taleo, iCIMS, SmartRecruiters, Greenhouse,
+ * Lever, Teamtailor... le lisent correctement.
+ *
+ * Utilisation : node build_ats_cv.js cv_content.json sortie.docx
+ * Nécessite le paquet npm « docx » (npm install docx).
+ * Schéma JSON : references/ats_rules.md.
  */
 const fs = require("fs");
 
 // Node resolves modules from this script's folder, not from the working
 // directory: fall back to a "docx" installed where the command is run.
+// Node cherche les modules depuis le dossier du script, pas depuis le dossier
+// de travail : on se rabat sur un « docx » installé là où la commande est lancée.
 function loadDocx() {
   try {
     return require("docx");
@@ -52,7 +64,7 @@ const H = {
 }[lang];
 const T = { ...H, ...(cv.headings || {}) };
 
-const SIZE = 20; // 10 pt body
+const SIZE = 20; // 10 pt body / corps 10 pt
 const run = (text, o = {}) => new TextRun({ text, font: FONT, size: o.size || SIZE, bold: o.bold, italics: o.italics, color: o.color });
 const para = (children, o = {}) => new Paragraph({ children, spacing: { after: o.after ?? 60, before: o.before ?? 0 }, alignment: o.align, keepNext: o.keepNext });
 
@@ -72,6 +84,7 @@ const dates = (s, e) => [s, e === "present" || e === "Présent" || e === "Presen
 const body = [];
 
 // Name, title, contact: plain paragraphs at the very top (never in a table or header).
+// Nom, titre, coordonnées : paragraphes simples tout en haut (jamais dans un tableau ni dans l'en-tête).
 body.push(para([run(cv.name, { bold: true, size: 36 })], { after: 40 }));
 if (cv.title) body.push(para([run(cv.title, { bold: true, size: 22, color: ACC })], { after: 40 }));
 const c = cv.contact || {};

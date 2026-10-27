@@ -18,8 +18,29 @@ Requires python-docx (pip install python-docx) and, for PDFs, poppler
               Prints coverage and missing keywords.
   --strict    the file is meant to be the ATS version: tables, text boxes,
               header/footer text and images become errors, not warnings.
+  --lang      fr|en (default: the "lang" field of --content, else fr).
 
 Exit code 0 = no blocking error, 1 = at least one error.
+
+Test de lecture ATS d'un CV (.docx ou .pdf).
+
+Extrait le texte comme le ferait un parseur ATS simple (ordre de lecture,
+corps du document seulement) et signale ce qu'un logiciel de recrutement
+manquerait.
+
+Nécessite python-docx (pip install python-docx) et, pour les PDF, poppler
+(pdftotext, pdfinfo).
+
+  --content   le JSON qui a servi à construire le CV : vérifie que chaque
+              intitulé, entreprise et date est présent, dans l'ordre.
+  --keywords  un mot-clé par ligne (tiré de l'offre) ; « a|b » liste des
+              synonymes. Affiche la couverture et les mots-clés manquants.
+  --strict    le fichier doit être la version ATS : tableaux, zones de texte,
+              texte d'en-tête ou de pied de page et images deviennent des
+              erreurs, plus des avertissements.
+  --lang      fr|en (par défaut : le champ "lang" du --content, sinon fr).
+
+Code de sortie 0 = aucune erreur bloquante, 1 = au moins une erreur.
 """
 import argparse, json, re, subprocess, sys, unicodedata, zipfile
 from pathlib import Path
@@ -39,7 +60,8 @@ def norm(s):
 
 
 def has_phrase(phrase, text):
-    """Whole-word match on normalized text ("fort de" must not match "effort de")."""
+    """Whole-word match on normalized text ("fort de" must not match "effort de").
+    Correspondance sur des mots entiers ("fort de" ne doit pas trouver "effort de")."""
     return re.search(r"(?<![a-z0-9])" + re.escape(norm(phrase)) + r"(?![a-z0-9])", text) is not None
 
 
@@ -92,12 +114,13 @@ def main():
     p = Path(a.cv)
     info = pdf_text(p) if p.suffix.lower() == ".pdf" else docx_text(p)
     # What a weak parser reliably sees: the body. What a good one may see: body + tables.
+    # Ce qu'un parseur faible lit à coup sûr : le corps. Ce qu'un bon parseur peut lire : corps + tableaux.
     seen = info["body"]
     full = info["body"] + "\n" + info["table_text"]
     errors, warns, oks = [], [], []
     lvl = errors if a.strict else warns
 
-    # Layout traps
+    # Layout traps / Pièges de mise en page
     if info["n_tables"]:
         lvl.append(f"{info['n_tables']} tableau(x) : beaucoup d'ATS (Workday, Taleo, iCIMS) mélangent ou perdent leur contenu.")
     if info["textboxes"]:
@@ -108,6 +131,7 @@ def main():
         warns.append(f"{info['images']} image(s) : aucun texte important ne doit être dans une image.")
 
     # Contact data must be readable in the body text
+    # Les coordonnées doivent être lisibles dans le corps du texte
     if re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", seen):
         oks.append("E-mail lisible.")
     elif re.search(r"[\w.+-]+@[\w-]+\.[\w.]+", full):
@@ -129,7 +153,7 @@ def main():
         else:
             errors.append("Le nom n'apparaît pas dans les 3 premières lignes lues.")
 
-    # Style traps
+    # Style traps / Pièges de style
     if "—" in full:
         errors.append("Tiret long (—) présent : à remplacer.")
     if "–" in full:
@@ -140,6 +164,7 @@ def main():
     if hits:
         warns.append("Tournures qui sonnent IA ou creuses : " + ", ".join(hits))
     # Month names, French or English, full or abbreviated ("janv. 2023", "March 2023").
+    # Mois en lettres, en français ou en anglais, complets ou abrégés.
     months = re.findall(
         r"\b(janv(?:ier)?|f[ée]vr(?:ier)?|mars|avr(?:il)?|mai|juin|juil(?:let)?|ao[uû]t|sept(?:embre)?|oct(?:obre)?"
         r"|nov(?:embre)?|d[ée]c(?:embre)?|jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?"
@@ -153,6 +178,7 @@ def main():
          else oks.append(msg + "."))
 
     # Structure check against the content JSON
+    # Contrôle de la structure par rapport au JSON du contenu
     if a.content:
         pos, ns = 0, norm(seen)
         for e in cv.get("experience", []):
@@ -161,6 +187,7 @@ def main():
                 if not val:
                     continue
                 # Prefer the occurrence after the previous title; else any occurrence (out of order).
+                # Chercher d'abord après l'intitulé précédent ; sinon n'importe où (ordre inattendu).
                 i = ns.find(norm(val), pos) if field == "title" else ns.find(norm(val))
                 if field == "title" and i < 0:
                     i = ns.find(norm(val))
@@ -173,7 +200,7 @@ def main():
         if not any("Introuvable" in x for x in errors):
             oks.append("Tous les postes, entreprises et dates de début sont lus.")
 
-    # Keyword coverage
+    # Keyword coverage / Couverture des mots-clés
     if a.keywords:
         kws = [l.strip() for l in open(a.keywords, encoding="utf8") if l.strip() and not l.startswith("#")]
         found, missing = [], []
