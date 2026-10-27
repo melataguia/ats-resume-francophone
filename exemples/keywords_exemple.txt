@@ -1,0 +1,12 @@
+# Mots-clés extraits d'une offre de Data Analyst (exemple)
+Data Analyst|analyste de données
+SQL
+Power BI
+DAX
+Python
+Excel
+qualité des données|data quality
+Agile|Scrum
+néerlandais
+Tableau
+Azure

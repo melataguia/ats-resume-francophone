@@ -1,0 +1,51 @@
+{
+  "lang": "fr",
+  "accent": "1F3A5F",
+  "paper": "a4",
+  "name": "Camille DUPONT",
+  "title": "Data Analyst · Reporting et Power BI",
+  "contact": {
+    "location": "Liège (Wallonie)",
+    "phone": "+32 470 00 00 00",
+    "email": "camille.dupont@exemple.be",
+    "linkedin": "linkedin.com/in/camille-dupont-exemple"
+  },
+  "summary": "Data Analyst avec 3 ans d'expérience en reporting commercial. Construction de tableaux de bord Power BI, requêtes SQL et automatisation de rapports mensuels pour des équipes de vente en Belgique et en France.",
+  "skills": [
+    { "label": "Data", "items": ["SQL", "Power BI", "DAX", "Excel avancé", "Python (pandas)"] },
+    { "label": "Méthodes", "items": ["Agile Scrum", "qualité des données", "RGPD"] },
+    { "label": "Outils", "items": ["Jira", "Confluence", "SharePoint"] }
+  ],
+  "experience": [
+    {
+      "title": "Analyste reporting · Data Analyst Power BI",
+      "company": "Entreprise Exemple SA",
+      "location": "Liège",
+      "start": "03/2022",
+      "end": "present",
+      "bullets": [
+        "Conçu 12 tableaux de bord Power BI suivis chaque semaine par 40 commerciaux.",
+        "Automatisé le rapport mensuel des ventes en SQL et Power Query, ramené de 2 jours à 2 heures.",
+        "Défini des règles de qualité des données avec l'équipe CRM et suivi des anomalies dans Jira."
+      ]
+    },
+    {
+      "title": "Stagiaire · Analyse de données",
+      "company": "Société Démo SRL",
+      "location": "Namur",
+      "start": "02/2021",
+      "end": "06/2021",
+      "bullets": ["Nettoyé et analysé les données clients en Python pour une étude de fidélisation."]
+    }
+  ],
+  "education": [
+    { "degree": "Master en sciences de gestion, orientation data", "school": "Université de Liège (ULiège)", "location": "Liège", "start": "09/2019", "end": "06/2021" }
+  ],
+  "languages": [
+    { "name": "Français", "level": "langue maternelle (C2)" },
+    { "name": "Anglais", "level": "C1" },
+    { "name": "Néerlandais", "level": "B1" }
+  ],
+  "certifications": ["Microsoft PL-300 Power BI Data Analyst · Microsoft, 2023"],
+  "design": { "template": "pikachu" }
+}

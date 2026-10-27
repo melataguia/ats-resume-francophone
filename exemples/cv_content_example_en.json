@@ -1,0 +1,50 @@
+{
+  "lang": "en",
+  "accent": "1F3A5F",
+  "paper": "a4",
+  "name": "Camille DUPONT",
+  "title": "Data Analyst · Reporting and Power BI",
+  "contact": {
+    "location": "Liège, Belgium",
+    "phone": "+32 470 00 00 00",
+    "email": "camille.dupont@exemple.be",
+    "linkedin": "linkedin.com/in/camille-dupont-exemple"
+  },
+  "summary": "Data Analyst with 3 years of experience in sales reporting. Builds Power BI dashboards, SQL queries and automated monthly reports for sales teams in Belgium and France. Works in French, English and Dutch.",
+  "skills": [
+    { "label": "Data", "items": ["SQL", "Power BI", "DAX", "Advanced Excel", "Python (pandas)"] },
+    { "label": "Methods", "items": ["Agile Scrum", "data quality", "GDPR"] },
+    { "label": "Tools", "items": ["Jira", "Confluence", "SharePoint"] }
+  ],
+  "experience": [
+    {
+      "title": "Reporting Analyst · Power BI Data Analyst",
+      "company": "Entreprise Exemple SA",
+      "location": "Liège",
+      "start": "03/2022",
+      "end": "present",
+      "bullets": [
+        "Designed 12 Power BI dashboards used every week by 40 sales representatives.",
+        "Automated the monthly sales report with SQL and Power Query, cutting it from 2 days to 2 hours.",
+        "Defined data quality rules with the CRM team and tracked issues in Jira."
+      ]
+    },
+    {
+      "title": "Intern · Data Analysis",
+      "company": "Société Démo SRL",
+      "location": "Namur",
+      "start": "02/2021",
+      "end": "06/2021",
+      "bullets": ["Cleaned and analysed customer data in Python for a customer retention study."]
+    }
+  ],
+  "education": [
+    { "degree": "Master's degree in Management Sciences, data track (Master en sciences de gestion)", "school": "University of Liège (ULiège)", "location": "Liège", "start": "09/2019", "end": "06/2021" }
+  ],
+  "languages": [
+    { "name": "French", "level": "native (C2)" },
+    { "name": "English", "level": "C1" },
+    { "name": "Dutch", "level": "B1" }
+  ],
+  "certifications": ["Microsoft PL-300 Power BI Data Analyst · Microsoft, 2023"]
+}

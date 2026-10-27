@@ -1,0 +1,13 @@
+# Keywords from a Data Analyst job offer written in English (example)
+Data Analyst
+SQL
+Power BI
+DAX
+Python
+Excel
+data quality
+Agile|Scrum
+Dutch|Nederlands
+French
+Tableau
+Azure
